@@ -1,0 +1,21 @@
+
+
+services:
+  gateway-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: discovery-gateway-service
+    image: app-image-gateway-service
+    environment:
+      CONSUL_HOST: consul-server-bootstrap
+    ports:
+      - "8096:8096"
+    networks:
+      - musalog_net
+
+networks:
+  musalog_net:
+    driver: bridge
+
+

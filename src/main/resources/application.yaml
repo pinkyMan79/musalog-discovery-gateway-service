@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: musalog-discovery-gw-service
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      service-registry:
+        enabled: true
+      discovery:
+        service-name: ${spring.application.name}
+        instance-id: ${spring.application.name}::${spring.application.instance_id:${random.value}}
+        prefer-ip-address: true
+        register: true
+        enabled: true
+        query-passing: true
+        deregister: true
+      enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: musalog-auth-service
+          uri: lb://musalog-auth-service
+          predicates:
+            - Path=/musalog-auth-service/**
+        - id: musalog-user-service
+          uri: lb://musalog-user-service
+          predicates:
+            - Path=/musalog-user-service/**
+        - id: musalog-payment-service
+          uri: lb://musalog-payment-service
+          predicates:
+            - Path=/musalog-payment-service/**
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+server:
+  port: 8096
+
